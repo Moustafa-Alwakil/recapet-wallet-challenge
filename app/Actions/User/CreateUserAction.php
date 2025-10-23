@@ -9,16 +9,16 @@ use App\Models\User;
 
 final class CreateUserAction
 {
-    public function __invoke(UserDTO $userDTO): User
+    public User $user;
+
+    public function __invoke(UserDTO $userDTO): void
     {
-        $user = new User;
+        $this->user = new User;
 
-        $user->name = $userDTO->name;
-        $user->email = $userDTO->email;
-        $user->password = $userDTO->password;
+        $this->user->name = $userDTO->name;
+        $this->user->email = $userDTO->email;
+        $this->user->password = $userDTO->password;
 
-        $user->save();
-
-        return $user;
+        $this->user->save();
     }
 }

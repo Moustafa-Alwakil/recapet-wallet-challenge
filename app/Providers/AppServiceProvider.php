@@ -7,6 +7,7 @@ namespace App\Providers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Number;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -29,6 +30,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureCommands();
         $this->configurePasswordDefaults();
         $this->configureModelRequirements();
+        $this->configureNumberMacros();
     }
 
     public function configureUrl(): void
@@ -60,5 +62,13 @@ final class AppServiceProvider extends ServiceProvider
     {
         Model::automaticallyEagerLoadRelationships();
         Model::shouldBeStrict();
+    }
+
+    private function configureNumberMacros(): void
+    {
+        Number::macro(
+            name: 'convertToCents',
+            macro: fn (float $amount) => $amount * 100,
+        );
     }
 }

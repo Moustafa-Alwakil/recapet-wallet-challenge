@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Http\Requests\Api\Auth\LoginRequest;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Responses\CustomJsonResponse;
 use Illuminate\Http\JsonResponse;
@@ -33,7 +32,7 @@ final class LoginController extends ApiBaseController
         return CustomJsonResponse::success(
             message: 'Logged in successfully.',
             data: [
-                'user' => new UserResource($user),
+                'user' => $user->toResource(),
                 'token' => $accessToken->plainTextToken,
             ],
         );

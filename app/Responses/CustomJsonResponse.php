@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Responses;
 
-use App\Enums\ExceptionCodeEnum;
+use App\Enums\ExceptionCode;
 use Illuminate\Http\JsonResponse;
 
 final class CustomJsonResponse
@@ -37,7 +37,7 @@ final class CustomJsonResponse
         );
     }
 
-    public static function exception(string $message, string $description, ExceptionCodeEnum $exceptionCode, int $statusCode = 400): JsonResponse
+    public static function exception(string $message, string $description, ExceptionCode $exceptionCode, int $statusCode = 400): JsonResponse
     {
         return new JsonResponse(
             data: [
