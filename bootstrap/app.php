@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundLaravelE
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Infinitypaul\Idempotency\Middleware\EnsureIdempotency;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -29,7 +30,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'active_wallet' => EnsureWalletIsActiveMiddleware::class,
+            'ensure_active_wallet' => EnsureWalletIsActiveMiddleware::class,
+            'ensure_idempotency' => EnsureIdempotency::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

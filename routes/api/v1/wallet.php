@@ -14,7 +14,10 @@ Route::middleware([
         ->group(function () {
             Route::get('balance', 'balance');
 
-            Route::middleware('active_wallet')
+            Route::middleware([
+                'ensure_active_wallet',
+                'ensure_idempotency',
+            ])
                 ->group(function () {
                     Route::post('deposit', 'deposit');
                     Route::post('withdraw', 'withdraw');
