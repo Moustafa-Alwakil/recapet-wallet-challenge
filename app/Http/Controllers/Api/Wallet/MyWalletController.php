@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 /**
  * @property-read User $authUser
  */
-final class WalletController extends ApiBaseController
+final class MyWalletController extends ApiBaseController
 {
     public function balance(Request $request): JsonResponse
     {
