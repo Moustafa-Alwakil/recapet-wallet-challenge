@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\WalletWithdrawalRequestStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Number;
 
 final class WalletWithdrawalRequest extends Model
@@ -30,6 +31,14 @@ final class WalletWithdrawalRequest extends Model
         $textualAmount = Number::currency($this->amount / 100);
 
         return $textualAmount;
+    }
+
+    /**
+     * @return BelongsTo<Wallet, $this>
+     */
+    public function wallet(): BelongsTo
+    {
+        return $this->belongsTo(Wallet::class);
     }
 
     protected function casts(): array

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Actions\Wallet;
 
 use App\Enums\ExceptionCode;
-use App\Exceptions\DepositWalletFailedException;
+use App\Exceptions\DepositToWalletFailedException;
 use App\Models\Wallet;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
-final class DepositWalletAction
+final class DepositToWalletAction
 {
     public Wallet $wallet;
 
@@ -33,8 +33,8 @@ final class DepositWalletAction
         } catch (Exception $exception) {
             DB::rollBack();
 
-            throw DepositWalletFailedException::new(
-                exceptionCode: ExceptionCode::DEPOSIT_WALLET_FAILED,
+            throw DepositToWalletFailedException::new(
+                exceptionCode: ExceptionCode::DEPOSIT_TO_WALLET_FAILED,
                 statusCode: Response::HTTP_INTERNAL_SERVER_ERROR,
                 message: 'Deposit failed due to system error.',
                 description: $exception->getMessage(),

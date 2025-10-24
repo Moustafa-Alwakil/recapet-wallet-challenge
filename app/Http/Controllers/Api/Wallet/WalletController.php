@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Wallet;
 
-use App\Actions\Wallet\DepositWalletAction;
-use App\Actions\Wallet\WithdrawWalletAction;
-use App\Exceptions\DepositWalletFailedException;
+use App\Actions\Wallet\DepositToWalletAction;
+use App\Actions\Wallet\WithdrawFromWalletAction;
+use App\Exceptions\DepositToWalletFailedException;
 use App\Exceptions\InsufficientBalanceException;
-use App\Exceptions\WithdrawWalletFailedException;
+use App\Exceptions\WithdrawFromWalletFailedException;
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Http\Requests\Api\Wallet\DepositWalletRequest;
 use App\Http\Requests\Api\Wallet\WithdrawWalletRequest;
@@ -22,11 +22,6 @@ use Illuminate\Http\Request;
  */
 final class WalletController extends ApiBaseController
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function balance(Request $request): JsonResponse
     {
         return CustomJsonResponse::success(
@@ -37,9 +32,9 @@ final class WalletController extends ApiBaseController
     }
 
     /**
-     * @throws DepositWalletFailedException
+     * @throws DepositToWalletFailedException
      */
-    public function deposit(DepositWalletRequest $request, DepositWalletAction $depositWalletAction): JsonResponse
+    public function deposit(DepositWalletRequest $request, DepositToWalletAction $depositWalletAction): JsonResponse
     {
         $depositWalletAction($this->authUser->wallet, $request->integer('amount'));
 
@@ -52,9 +47,9 @@ final class WalletController extends ApiBaseController
     }
 
     /**
-     * @throws WithdrawWalletFailedException|InsufficientBalanceException
+     * @throws WithdrawFromWalletFailedException|InsufficientBalanceException
      */
-    public function withdraw(WithdrawWalletRequest $request, WithdrawWalletAction $withdrawWalletAction): JsonResponse
+    public function withdraw(WithdrawWalletRequest $request, WithdrawFromWalletAction $withdrawWalletAction): JsonResponse
     {
         $withdrawWalletAction($this->authUser->wallet, $request->integer('amount'));
 

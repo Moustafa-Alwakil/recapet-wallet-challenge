@@ -7,14 +7,14 @@ namespace App\Actions\Wallet;
 use App\Enums\ExceptionCode;
 use App\Enums\WalletWithdrawalRequestStatus;
 use App\Exceptions\InsufficientBalanceException;
-use App\Exceptions\WithdrawWalletFailedException;
+use App\Exceptions\WithdrawFromWalletFailedException;
 use App\Models\Wallet;
 use App\Models\WalletWithdrawalRequest;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
-final class WithdrawWalletAction
+final class WithdrawFromWalletAction
 {
     public WalletWithdrawalRequest $withdrawalRequest;
 
@@ -36,9 +36,9 @@ final class WithdrawWalletAction
         $this->wallet = $wallet;
 
         try {
-            if ($wallet->balance < $this->withdrawalRequest->amount) {
+            if ($wallet->hasSufficientBalance($amount)) {
                 throw InsufficientBalanceException::new(
-                    exceptionCode: ExceptionCode::INSUFFICIENT_BALANCE,
+                    exceptionCode: ExceptionCode::WITHDRAWAL_FAILED_DUE_TO_INSUFFICIENT_BALANCE,
                     statusCode: Response::HTTP_BAD_REQUEST,
                     message: 'Insufficient balance to complete this transaction, please add funds to your wallet to continue.',
                 );
@@ -57,8 +57,8 @@ final class WithdrawWalletAction
                 throw $exception;
             }
 
-            throw WithdrawWalletFailedException::new(
-                exceptionCode: ExceptionCode::WITHDRAW_WALLET_FAILED,
+            throw WithdrawFromWalletFailedException::new(
+                exceptionCode: ExceptionCode::WITHDRAW_FROM_WALLET_FAILED,
                 statusCode: Response::HTTP_INTERNAL_SERVER_ERROR,
                 message: 'Withdraw failed due to system error.',
                 description: $exception->getMessage(),
