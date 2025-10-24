@@ -13,7 +13,12 @@ Route::middleware([
         ->controller(MyWalletController::class)
         ->group(function () {
             Route::get('balance', 'balance');
-            Route::post('deposit', 'deposit');
-            Route::post('withdraw', 'withdraw');
+
+            Route::middleware('active_wallet')
+                ->group(function () {
+                    Route::post('deposit', 'deposit');
+                    Route::post('withdraw', 'withdraw');
+                    Route::post('transfer', 'transfer');
+                });
         });
 });

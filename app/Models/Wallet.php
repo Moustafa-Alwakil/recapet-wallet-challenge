@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\WalletStatus;
 use App\Http\Resources\WalletResource;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Model;
@@ -11,16 +12,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Number;
 
+/**
+ * @property WalletStatus $status
+ */
 #[UseResource(WalletResource::class)]
 final class Wallet extends Model
 {
     protected $fillable = [
-        'balance',
+        'balance_in_cents',
+        'status',
         'user_id',
     ];
 
     protected $appends = [
         'textual_balance',
+        'balance',
+    ];
+
+    protected $attributes = [
+        'status' => WalletStatus::ACTIVE,
     ];
 
     /**
@@ -31,10 +41,15 @@ final class Wallet extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getBalanceAttribute(): float
+    {
+        return $this->balance_in_cents / 100;
+    }
+
     public function getTextualBalanceAttribute(): string
     {
         /** @var string $textualBalance */
-        $textualBalance = Number::currency($this->balance / 100);
+        $textualBalance = Number::currency($this->balance);
 
         return $textualBalance;
     }
@@ -47,8 +62,39 @@ final class Wallet extends Model
         return $this->hasMany(WalletWithdrawalRequest::class);
     }
 
+    /**
+     * @return HasMany<WalletDeposit, $this>
+     */
+    public function deposits(): HasMany
+    {
+        return $this->hasMany(WalletDeposit::class);
+    }
+
+    /**
+     * @return HasMany<WalletTransfer, $this>
+     */
+    public function out_transfers(): HasMany
+    {
+        return $this->hasMany(WalletTransfer::class, 'sender_wallet_id');
+    }
+
+    /**
+     * @return HasMany<WalletTransfer, $this>
+     */
+    public function in_transfers(): HasMany
+    {
+        return $this->hasMany(WalletTransfer::class, 'receiver_wallet_id');
+    }
+
     public function hasSufficientBalance(int $amount): bool
     {
-        return $this->balance >= $amount;
+        return $this->balance_in_cents >= $amount;
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'status' => WalletStatus::class,
+        ];
     }
 }

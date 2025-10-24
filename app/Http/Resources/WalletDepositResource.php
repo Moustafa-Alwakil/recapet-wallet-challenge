@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\User;
+use App\Models\WalletDeposit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin User */
-final class UserResource extends JsonResource
+/** @mixin WalletDeposit */
+final class WalletDepositResource extends JsonResource
 {
     /**
      * @return array<mixed>
@@ -18,8 +18,11 @@ final class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
+            'amount_in_cents' => $this->amount_in_cents,
+            'amount' => $this->amount,
+            'textual_amount' => $this->textual_amount,
+            'status' => $this->status->current(),
+            'created_at' => $this->created_at->diffForHumans(),
 
             'wallet' => new WalletResource($this->whenLoaded('wallet')),
         ];

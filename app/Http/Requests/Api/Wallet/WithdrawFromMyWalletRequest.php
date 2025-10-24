@@ -7,8 +7,10 @@ namespace App\Http\Requests\Api\Wallet;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Number;
 
-final class WithdrawWalletRequest extends FormRequest
+final class WithdrawFromMyWalletRequest extends FormRequest
 {
+    public int $amountInCents;
+
     /**
      * @return array<string>
      */
@@ -21,8 +23,6 @@ final class WithdrawWalletRequest extends FormRequest
 
     protected function passedValidation(): void
     {
-        $this->replace([
-            'amount' => Number::convertToCents($this->float('amount')),
-        ]);
+        $this->amountInCents = Number::convertToCents($this->float('amount'));
     }
 }

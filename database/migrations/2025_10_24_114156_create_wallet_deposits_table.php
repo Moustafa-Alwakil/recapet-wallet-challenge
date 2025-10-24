@@ -11,7 +11,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('wallet_withdrawal_requests', function (Blueprint $table) {
+        Schema::create('wallet_deposits', function (Blueprint $table) {
             $table->id();
             $table->mediumInteger('amount_in_cents');
             $table->string('status');
@@ -22,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('wallet_withdrawal_requests');
+        Schema::dropIfExists('wallet_deposits');
     }
 };

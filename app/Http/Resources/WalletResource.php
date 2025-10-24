@@ -18,9 +18,16 @@ final class WalletResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'balance_in_cents' => $this->balance,
+            'status' => $this->status->current(),
+            'balance_in_cents' => $this->balance_in_cents,
+            'balance' => $this->balance,
             'textual_balance' => $this->textual_balance,
+
             'user' => new UserResource($this->whenLoaded('user')),
+            'withdrawal_requests' => WalletWithdrawalRequestResource::collection($this->whenLoaded('withdrawal_requests')),
+            'deposits' => WalletDepositResource::collection($this->whenLoaded('deposits')),
+            'in_transfers' => WalletTransferResource::collection($this->whenLoaded('in_transfers')),
+            'out_transfers' => WalletTransferResource::collection($this->whenLoaded('out_transfers')),
         ];
     }
 }

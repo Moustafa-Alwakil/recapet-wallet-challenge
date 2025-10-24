@@ -5,33 +5,42 @@ declare(strict_types=1);
 namespace App\Actions\Wallet;
 
 use App\Enums\ExceptionCode;
+use App\Enums\WalletDepositStatus;
 use App\Exceptions\DepositToWalletFailedException;
 use App\Models\Wallet;
-use Exception;
+use App\Models\WalletDeposit;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class DepositToWalletAction
 {
+    public WalletDeposit $deposit;
+
     public Wallet $wallet;
 
-    public function __invoke(Wallet $wallet, int $amount): void
+    public function __invoke(Wallet $wallet, int $amountInCents): void
     {
+        $this->deposit = $wallet->deposits()
+            ->create([
+                'amount_in_cents' => $amountInCents,
+            ]);
+
         DB::beginTransaction();
 
         try {
             /** @var Wallet $wallet */
             $wallet = $wallet->lockForUpdate()->find($wallet->id);
-
             $this->wallet = $wallet;
 
-            $wallet->balance += $amount;
-
-            $wallet->save();
+            $this->addToWalletBalance();
+            $this->markDepositAsSucceeded();
 
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             DB::rollBack();
+
+            $this->markDepositAsFailed();
 
             throw DepositToWalletFailedException::new(
                 exceptionCode: ExceptionCode::DEPOSIT_TO_WALLET_FAILED,
@@ -40,5 +49,26 @@ final class DepositToWalletAction
                 description: $exception->getMessage(),
             );
         }
+    }
+
+    private function addToWalletBalance(): void
+    {
+        $this->wallet->balance_in_cents += $this->deposit->amount_in_cents;
+
+        $this->wallet->save();
+    }
+
+    private function markDepositAsFailed(): void
+    {
+        $this->deposit->update([
+            'status' => WalletDepositStatus::FAILED,
+        ]);
+    }
+
+    private function markDepositAsSucceeded(): void
+    {
+        $this->deposit->update([
+            'status' => WalletDepositStatus::SUCCEEDED,
+        ]);
     }
 }

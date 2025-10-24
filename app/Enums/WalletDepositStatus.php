@@ -6,7 +6,7 @@ namespace App\Enums;
 
 use App\Traits\EnumFeatures;
 
-enum WalletWithdrawalRequestStatus: string
+enum WalletDepositStatus: string
 {
     use EnumFeatures;
 

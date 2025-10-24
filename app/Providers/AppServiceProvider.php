@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\FeeCalculatorContract;
+use App\Services\FeeCalculatorService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Number;
@@ -18,7 +21,13 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            abstract: FeeCalculatorContract::class,
+            concrete: fn () => new FeeCalculatorService(
+                staticFeeInCents: Config::integer('wallet.fee.transfer.static_in_cents'),
+                percentageRate: Config::float('wallet.fee.transfer.percentage_rate'),
+            )
+        );
     }
 
     /**
@@ -68,7 +77,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         Number::macro(
             name: 'convertToCents',
-            macro: fn (float $amount) => $amount * 100,
+            macro: fn (float $amount): int => (int) ($amount * 100),
         );
     }
 }

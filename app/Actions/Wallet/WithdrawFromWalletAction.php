@@ -10,9 +10,9 @@ use App\Exceptions\InsufficientBalanceException;
 use App\Exceptions\WithdrawFromWalletFailedException;
 use App\Models\Wallet;
 use App\Models\WalletWithdrawalRequest;
-use Exception;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class WithdrawFromWalletAction
 {
@@ -20,42 +20,43 @@ final class WithdrawFromWalletAction
 
     public Wallet $wallet;
 
-    public function __invoke(Wallet $wallet, int $amount): void
+    public function __invoke(Wallet $wallet, int $amountInCents): void
     {
         $this->withdrawalRequest = WalletWithdrawalRequest::query()
             ->create([
-                'amount' => $amount,
+                'amount_in_cents' => $amountInCents,
                 'wallet_id' => $wallet->id,
             ]);
 
         DB::beginTransaction();
 
-        /** @var Wallet $wallet */
-        $wallet = $wallet->lockForUpdate()->find($wallet->id);
-
-        $this->wallet = $wallet;
-
         try {
-            if ($wallet->hasSufficientBalance($amount)) {
-                throw InsufficientBalanceException::new(
+            /** @var Wallet $wallet */
+            $wallet = $wallet->lockForUpdate()->find($wallet->id);
+            $this->wallet = $wallet;
+
+            throw_unless(
+                condition: $wallet->hasSufficientBalance($amountInCents),
+                exception: InsufficientBalanceException::new(
                     exceptionCode: ExceptionCode::WITHDRAWAL_FAILED_DUE_TO_INSUFFICIENT_BALANCE,
                     statusCode: Response::HTTP_BAD_REQUEST,
                     message: 'Insufficient balance to complete this transaction, please add funds to your wallet to continue.',
-                );
-            }
+                )
+            );
 
             $this->deductFromWalletBalance();
             $this->markWithdrawalRequestAsSucceeded();
 
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             DB::rollBack();
 
             $this->markWithdrawalRequestAsFailed();
 
-            if ($exception instanceof InsufficientBalanceException) {
-                throw $exception;
-            }
+            throw_if(
+                condition: $exception instanceof InsufficientBalanceException,
+                exception: $exception
+            );
 
             throw WithdrawFromWalletFailedException::new(
                 exceptionCode: ExceptionCode::WITHDRAW_FROM_WALLET_FAILED,
@@ -68,7 +69,7 @@ final class WithdrawFromWalletAction
 
     private function deductFromWalletBalance(): void
     {
-        $this->wallet->balance -= $this->withdrawalRequest->amount;
+        $this->wallet->balance_in_cents -= $this->withdrawalRequest->amount_in_cents;
 
         $this->wallet->save();
     }

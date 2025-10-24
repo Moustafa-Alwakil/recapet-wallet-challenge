@@ -9,6 +9,7 @@ use App\Exceptions\NotReportableException;
 use App\Exceptions\RouteNotFoundException;
 use App\Exceptions\UnauthenticatedException;
 use App\Exceptions\UnauthorizedException;
+use App\Http\Middleware\EnsureWalletIsActiveMiddleware;
 use App\Responses\CustomJsonResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundLaravelException;
@@ -27,7 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'active_wallet' => EnsureWalletIsActiveMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->dontReportWhen(fn (Exception $exception) => $exception instanceof NotReportableException);

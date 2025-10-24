@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('balance')->default(0);
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('balance_in_cents')->default(0);
+            $table->string('status');
+            $table->foreignIdFor(User::class)->unique()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

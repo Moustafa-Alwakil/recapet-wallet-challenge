@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\WalletWithdrawalRequestStatus;
-use App\Http\Resources\WalletWithdrawalRequestResource;
+use App\Enums\WalletDepositStatus;
+use App\Http\Resources\WalletDepositResource;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Model;
@@ -13,11 +13,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Number;
 
 /**
- * @property WalletWithdrawalRequestStatus $status
+ * @property WalletDepositStatus $status
  * @property-read Carbon $created_at
  */
-#[UseResource(WalletWithdrawalRequestResource::class)]
-final class WalletWithdrawalRequest extends Model
+#[UseResource(WalletDepositResource::class)]
+final class WalletDeposit extends Model
 {
     protected $fillable = [
         'amount_in_cents',
@@ -25,14 +25,22 @@ final class WalletWithdrawalRequest extends Model
         'wallet_id',
     ];
 
-    protected $attributes = [
-        'status' => WalletWithdrawalRequestStatus::PENDING,
-    ];
-
     protected $appends = [
         'textual_amount',
         'amount',
     ];
+
+    protected $attributes = [
+        'status' => WalletDepositStatus::PENDING,
+    ];
+
+    /**
+     * @return BelongsTo<Wallet, $this>
+     */
+    public function wallet(): BelongsTo
+    {
+        return $this->belongsTo(Wallet::class);
+    }
 
     public function getAmountAttribute(): float
     {
@@ -47,18 +55,10 @@ final class WalletWithdrawalRequest extends Model
         return $textualAmount;
     }
 
-    /**
-     * @return BelongsTo<Wallet, $this>
-     */
-    public function wallet(): BelongsTo
-    {
-        return $this->belongsTo(Wallet::class);
-    }
-
     protected function casts(): array
     {
         return [
-            'status' => WalletWithdrawalRequestStatus::class,
+            'status' => WalletDepositStatus::class,
         ];
     }
 }
