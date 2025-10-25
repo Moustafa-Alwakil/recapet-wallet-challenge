@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\V1;
 
 use App\Models\WalletTransfer;
 use Illuminate\Http\Request;
@@ -28,7 +28,9 @@ final class WalletTransferResource extends JsonResource
             'textual_fee' => $this->textual_fee,
             'textual_total' => $this->textual_total,
             'status' => $this->status->current(),
-            'created_at' => $this->created_at->diffForHumans(),
+            'receiver_wallet_id' => $this->receiver_wallet_id,
+            'sender_wallet_id' => $this->sender_wallet_id,
+            'created_at' => $this->created_at,
 
             'receiver_wallet' => new WalletResource($this->whenLoaded('receiver_wallet')),
             'sender_wallet' => new WalletResource($this->whenLoaded('sender_wallet')),

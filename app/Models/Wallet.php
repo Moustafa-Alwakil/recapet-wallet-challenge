@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\WalletStatus;
-use App\Http\Resources\WalletResource;
+use App\Http\Resources\V1\WalletResource;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,12 +33,9 @@ final class Wallet extends Model
         'status' => WalletStatus::ACTIVE,
     ];
 
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function user(): BelongsTo
+    public static function morphAlias(): string
     {
-        return $this->belongsTo(User::class);
+        return 'wallet';
     }
 
     public function getBalanceAttribute(): float
@@ -52,6 +49,14 @@ final class Wallet extends Model
         $textualBalance = Number::currency($this->balance);
 
         return $textualBalance;
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -84,6 +89,14 @@ final class Wallet extends Model
     public function in_transfers(): HasMany
     {
         return $this->hasMany(WalletTransfer::class, 'receiver_wallet_id');
+    }
+
+    /**
+     * @return HasMany<WalletLedgerEntry, $this>
+     */
+    public function wallet_ledger_entries(): HasMany
+    {
+        return $this->hasMany(WalletLedgerEntry::class, 'wallet_id');
     }
 
     public function hasSufficientBalance(int $amount): bool

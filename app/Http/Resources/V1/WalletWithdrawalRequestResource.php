@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\V1;
 
-use App\Models\WalletDeposit;
+use App\Models\WalletWithdrawalRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin WalletDeposit */
-final class WalletDepositResource extends JsonResource
+/** @mixin WalletWithdrawalRequest */
+final class WalletWithdrawalRequestResource extends JsonResource
 {
     /**
      * @return array<mixed>
@@ -22,7 +22,8 @@ final class WalletDepositResource extends JsonResource
             'amount' => $this->amount,
             'textual_amount' => $this->textual_amount,
             'status' => $this->status->current(),
-            'created_at' => $this->created_at->diffForHumans(),
+            'wallet_id' => $this->wallet_id,
+            'created_at' => $this->created_at,
 
             'wallet' => new WalletResource($this->whenLoaded('wallet')),
         ];

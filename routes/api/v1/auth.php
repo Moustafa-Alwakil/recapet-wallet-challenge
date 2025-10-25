@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Api\Auth\LoginController;
-use App\Http\Controllers\Api\Auth\LogoutController;
-use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\LogoutController;
+use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:10,1')

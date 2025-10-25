@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\WalletDepositStatus;
-use App\Http\Resources\V1\WalletDepositResource;
-use App\Observers\WalletDepositObserver;
+use App\Enums\WalletLedgerEntryType;
+use App\Http\Resources\V1\WalletLedgerEntryResource;
+use App\Observers\WalletLedgerEntryObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Number;
 
 /**
- * @property WalletDepositStatus $status
+ * @property WalletLedgerEntryType $type
  */
-#[ObservedBy([WalletDepositObserver::class])]
-#[UseResource(WalletDepositResource::class)]
-final class WalletDeposit extends Model
+#[ObservedBy([WalletLedgerEntryObserver::class])]
+#[UseResource(WalletLedgerEntryResource::class)]
+final class WalletLedgerEntry extends Model
 {
     protected $fillable = [
+        'type',
         'amount_in_cents',
-        'status',
+        'reference_type',
+        'reference_id',
         'wallet_id',
     ];
 
@@ -32,13 +34,9 @@ final class WalletDeposit extends Model
         'amount',
     ];
 
-    protected $attributes = [
-        'status' => WalletDepositStatus::PENDING,
-    ];
-
     public static function morphAlias(): string
     {
-        return 'wallet_deposit';
+        return 'wallet_ledger_entry';
     }
 
     public function getAmountAttribute(): float
@@ -63,17 +61,17 @@ final class WalletDeposit extends Model
     }
 
     /**
-     * @return MorphOne<WalletLedgerEntry, $this>
+     * @return MorphTo<Model, $this>
      */
-    public function ledger_entry(): MorphOne
+    public function reference(): MorphTo
     {
-        return $this->morphOne(WalletLedgerEntry::class, 'reference');
+        return $this->morphTo();
     }
 
     protected function casts(): array
     {
         return [
-            'status' => WalletDepositStatus::class,
+            'type' => WalletLedgerEntryType::class,
         ];
     }
 }

@@ -35,57 +35,57 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->dontReportWhen(fn (Exception $exception) => $exception instanceof NotReportableException);
+        $exceptions->dontReportWhen(fn (Throwable $exception) => $exception instanceof NotReportableException);
 
         if (request()->expectsJson()) {
-            $exceptions->renderable(function (Exception $e) {
+            $exceptions->renderable(function (Throwable $exception) {
                 throw_if(
-                    condition: $e instanceof NotFoundHttpException && $e->getPrevious() instanceof ModelNotFoundLaravelException,
+                    condition: $exception instanceof NotFoundHttpException && $exception->getPrevious() instanceof ModelNotFoundLaravelException,
                     exception: ModelNotFoundException::new(
                         exceptionCode: ExceptionCode::MODEL_NOT_FOUND,
                         statusCode: Response::HTTP_NOT_FOUND,
                         message: 'The Record You\'re looking for does not exist.',
-                        description: $e->getMessage()
+                        description: $exception->getMessage()
                     )
                 );
 
                 throw_if(
-                    condition: $e instanceof NotFoundHttpException,
+                    condition: $exception instanceof NotFoundHttpException,
                     exception: RouteNotFoundException::new(
                         exceptionCode: ExceptionCode::ROUTE_NOT_FOUND,
                         statusCode: Response::HTTP_NOT_FOUND,
                         message: 'the endpoint you are looking for does not exist.',
-                        description: $e->getMessage()
+                        description: $exception->getMessage()
                     )
                 );
 
                 throw_if(
-                    condition: $e instanceof AccessDeniedHttpException,
+                    condition: $exception instanceof AccessDeniedHttpException,
                     exception: UnauthorizedException::new(
                         exceptionCode: ExceptionCode::UNAUTHORIZED,
                         statusCode: Response::HTTP_FORBIDDEN,
                         message: 'Unauthorized.',
-                        description: $e->getMessage()
+                        description: $exception->getMessage()
                     )
                 );
 
                 throw_if(
-                    condition: $e instanceof AuthenticationException,
+                    condition: $exception instanceof AuthenticationException,
                     exception: UnauthenticatedException::new(
                         exceptionCode: ExceptionCode::UNAUTHENTICATED,
                         statusCode: Response::HTTP_UNAUTHORIZED,
                         message: 'Unauthenticated.',
-                        description: $e->getMessage(),
+                        description: $exception->getMessage(),
                     )
                 );
             });
 
             $exceptions->renderable(
-                fn (InternalException $e) => CustomJsonResponse::exception(
-                    message: $e->getMessage(),
-                    description: $e->getDescription(),
-                    exceptionCode: $e->getExceptionCode(),
-                    statusCode: $e->getCode(),
+                fn (InternalException $internalException) => CustomJsonResponse::exception(
+                    message: $internalException->getMessage(),
+                    description: $internalException->getDescription(),
+                    exceptionCode: $internalException->getExceptionCode(),
+                    statusCode: $internalException->getCode(),
                 )
             );
         }

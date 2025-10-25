@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\Auth;
+namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Controllers\Api\ApiBaseController;
-use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Http\Controllers\Api\V1\ApiBaseController;
+use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Models\User;
 use App\Responses\CustomJsonResponse;
 use Illuminate\Http\JsonResponse;

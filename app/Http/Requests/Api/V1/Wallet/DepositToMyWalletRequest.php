@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Api\Wallet;
+namespace App\Http\Requests\Api\V1\Wallet;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Number;
 
-final class WithdrawFromMyWalletRequest extends FormRequest
+final class DepositToMyWalletRequest extends FormRequest
 {
     public int $amountInCents;
 

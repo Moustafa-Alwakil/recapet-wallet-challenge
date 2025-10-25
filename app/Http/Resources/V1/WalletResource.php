@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\V1;
 
 use App\Models\Wallet;
 use Illuminate\Http\Request;
@@ -22,6 +22,7 @@ final class WalletResource extends JsonResource
             'balance_in_cents' => $this->balance_in_cents,
             'balance' => $this->balance,
             'textual_balance' => $this->textual_balance,
+            'user_id' => $this->user_id,
 
             'user' => new UserResource($this->whenLoaded('user')),
             'withdrawal_requests' => WalletWithdrawalRequestResource::collection($this->whenLoaded('withdrawal_requests')),

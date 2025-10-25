@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Api\Auth;
+namespace App\Http\Requests\Api\V1\Auth;
 
 use App\DataTransferObjects\User\UserDTO;
 use App\Models\User;

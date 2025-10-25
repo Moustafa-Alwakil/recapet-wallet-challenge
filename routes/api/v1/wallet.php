@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Api\Wallet\MyWalletController;
+use App\Http\Controllers\Api\V1\Wallet\MyWalletController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([
@@ -12,16 +12,19 @@ Route::middleware([
     Route::prefix('my-wallet')
         ->controller(MyWalletController::class)
         ->group(function () {
-            Route::get('balance', 'balance');
-
-            Route::middleware([
-                'ensure_active_wallet',
-                'ensure_idempotency',
-            ])
+            Route::middleware('ensure_active_wallet')
                 ->group(function () {
-                    Route::post('deposit', 'deposit');
-                    Route::post('withdraw', 'withdraw');
-                    Route::post('transfer', 'transfer');
+                    Route::get('balance', 'balance');
+                    Route::get('ledger-entries', 'ledgerEntries');
+
+                    Route::middleware([
+                        'ensure_idempotency',
+                    ])
+                        ->group(function () {
+                            Route::post('deposit', 'deposit');
+                            Route::post('withdraw', 'withdraw');
+                            Route::post('transfer', 'transfer');
+                        });
                 });
         });
 });

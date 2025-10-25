@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\Auth;
+namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Actions\User\CreateUserAction;
-use App\Http\Controllers\Api\ApiBaseController;
-use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Http\Controllers\Api\V1\ApiBaseController;
+use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Responses\CustomJsonResponse;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

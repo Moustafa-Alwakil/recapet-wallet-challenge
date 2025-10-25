@@ -5,8 +5,17 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Contracts\FeeCalculatorContract;
+use App\Models\User;
+use App\Models\Wallet;
+use App\Models\WalletDeposit;
+use App\Models\WalletLedgerEntry;
+use App\Models\WalletTransfer;
+use App\Models\WalletWithdrawalRequest;
 use App\Services\FeeCalculatorService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -40,6 +49,8 @@ final class AppServiceProvider extends ServiceProvider
         $this->configurePasswordDefaults();
         $this->configureModelRequirements();
         $this->configureNumberMacros();
+        $this->configureBuilderMacros();
+        $this->enforceMorphMap();
     }
 
     public function configureUrl(): void
@@ -79,5 +90,22 @@ final class AppServiceProvider extends ServiceProvider
             name: 'convertToCents',
             macro: fn (float $amount): int => (int) ($amount * 100),
         );
+    }
+
+    private function configureBuilderMacros(): void
+    {
+        Builder::macro('customPaginate', fn (): LengthAwarePaginator => $this->paginate(request()->integer('per_page') ?: Config::integer('app.items_per_page')));
+    }
+
+    private function enforceMorphMap(): void
+    {
+        Relation::enforceMorphMap([
+            User::morphAlias() => User::class,
+            Wallet::morphAlias() => Wallet::class,
+            WalletDeposit::morphAlias() => WalletDeposit::class,
+            WalletLedgerEntry::morphAlias() => WalletLedgerEntry::class,
+            WalletTransfer::morphAlias() => WalletTransfer::class,
+            WalletWithdrawalRequest::morphAlias() => WalletWithdrawalRequest::class,
+        ]);
     }
 }

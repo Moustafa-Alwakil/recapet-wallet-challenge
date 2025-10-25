@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\V1\UserResource;
 use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
@@ -45,6 +45,11 @@ final class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public static function morphAlias(): string
+    {
+        return 'user';
+    }
 
     /**
      * @return HasOne<Wallet, $this>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Api\Wallet;
+namespace App\Http\Requests\Api\V1\Wallet;
 
 use App\Enums\WalletStatus;
 use App\Models\User;

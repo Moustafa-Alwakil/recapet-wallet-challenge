@@ -2,22 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\Wallet;
+namespace App\Http\Controllers\Api\V1\Wallet;
 
 use App\Actions\Wallet\DepositToWalletAction;
 use App\Actions\Wallet\TransferBetweenWalletsAction;
 use App\Actions\Wallet\WithdrawFromWalletAction;
 use App\Exceptions\DepositToWalletFailedException;
 use App\Exceptions\InsufficientBalanceException;
+use App\Exceptions\TransferBetweenWalletsFailedException;
 use App\Exceptions\WithdrawFromWalletFailedException;
-use App\Http\Controllers\Api\ApiBaseController;
-use App\Http\Requests\Api\Wallet\DepositToMyWalletRequest;
-use App\Http\Requests\Api\Wallet\TransferFromMyWalletRequest;
-use App\Http\Requests\Api\Wallet\WithdrawFromMyWalletRequest;
+use App\Http\Controllers\Api\V1\ApiBaseController;
+use App\Http\Requests\Api\V1\Wallet\DepositToMyWalletRequest;
+use App\Http\Requests\Api\V1\Wallet\TransferFromMyWalletRequest;
+use App\Http\Requests\Api\V1\Wallet\WithdrawFromMyWalletRequest;
 use App\Models\User;
 use App\Responses\CustomJsonResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
  * @property-read User $authUser
@@ -66,7 +68,7 @@ final class MyWalletController extends ApiBaseController
     }
 
     /**
-     * @throws WithdrawFromWalletFailedException|InsufficientBalanceException
+     * @throws TransferBetweenWalletsFailedException|InsufficientBalanceException
      */
     public function transfer(TransferFromMyWalletRequest $request, TransferBetweenWalletsAction $transferBetweenWalletsAction): JsonResponse
     {
@@ -79,5 +81,19 @@ final class MyWalletController extends ApiBaseController
                 'wallet' => $transferBetweenWalletsAction->senderWallet->toResource(),
             ]
         );
+    }
+
+    public function ledgerEntries(Request $request): ResourceCollection
+    {
+        return $this->authUser
+            ->wallet
+            ->wallet_ledger_entries()
+            ->with([
+                'reference',
+            ])
+            ->latest()
+            ->customPaginate()
+            ->appends($request->query())
+            ->toResourceCollection();
     }
 }

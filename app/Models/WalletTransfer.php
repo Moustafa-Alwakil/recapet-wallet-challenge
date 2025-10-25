@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\WalletTransferStatus;
-use App\Http\Resources\WalletTransferResource;
-use Carbon\Carbon;
+use App\Http\Resources\V1\WalletTransferResource;
+use App\Observers\WalletTransferObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Number;
 
 /**
  * @property WalletTransferStatus $status
- * @property-read Carbon $created_at
  */
+#[ObservedBy([WalletTransferObserver::class])]
 #[UseResource(WalletTransferResource::class)]
 final class WalletTransfer extends Model
 {
@@ -40,6 +42,11 @@ final class WalletTransfer extends Model
     protected $attributes = [
         'status' => WalletTransferStatus::PENDING,
     ];
+
+    public static function morphAlias(): string
+    {
+        return 'wallet_transfer';
+    }
 
     public function getAmountAttribute(): float
     {
@@ -99,6 +106,19 @@ final class WalletTransfer extends Model
     public function receiver_wallet(): BelongsTo
     {
         return $this->belongsTo(Wallet::class, 'receiver_wallet_id');
+    }
+
+    /**
+     * @return MorphOne<WalletLedgerEntry, $this>
+     */
+    public function ledger_entry(): MorphOne
+    {
+        return $this->morphOne(WalletLedgerEntry::class, 'reference');
+    }
+
+    public function hasFee(): bool
+    {
+        return $this->fee_in_cents > 0;
     }
 
     protected function casts(): array
