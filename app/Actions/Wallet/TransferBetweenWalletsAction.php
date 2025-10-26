@@ -23,6 +23,9 @@ final class TransferBetweenWalletsAction
 
     public Wallet $receiverWallet;
 
+    /**
+     * @throws TransferBetweenWalletsFailedException|InsufficientBalanceException|Throwable
+     */
     public function __invoke(Wallet $senderWallet, Wallet $receiverWallet, int $amountInCents): void
     {
         $this->walletTransfer = $senderWallet->out_transfers()
@@ -57,15 +60,16 @@ final class TransferBetweenWalletsAction
             $this->markTransferAsSucceeded();
 
             DB::commit();
-        } catch (Throwable $exception) {
+        } catch (InsufficientBalanceException $insufficientBalanceException) {
             DB::rollBack();
 
             $this->markTransferAsFailed();
 
-            throw_if(
-                condition: $exception instanceof InsufficientBalanceException,
-                exception: $exception
-            );
+            throw $insufficientBalanceException;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            $this->markTransferAsFailed();
 
             throw TransferBetweenWalletsFailedException::new(
                 exceptionCode: ExceptionCode::TRANSFER_BETWEEN_WALLETS_FAILED,

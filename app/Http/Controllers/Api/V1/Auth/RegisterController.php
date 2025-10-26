@@ -20,7 +20,7 @@ final class RegisterController extends ApiBaseController
         return CustomJsonResponse::success(
             message: 'Registered successfully.',
             data: [
-                $createUserAction->user->toResource(),
+                'user' => $createUserAction->user->toResource(),
             ],
             statusCode: Response::HTTP_CREATED
         );

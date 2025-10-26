@@ -19,6 +19,9 @@ final class DepositToWalletAction
 
     public Wallet $wallet;
 
+    /**
+     * @throws DepositToWalletFailedException|Throwable
+     */
     public function __invoke(Wallet $wallet, int $amountInCents): void
     {
         $this->deposit = $wallet->deposits()

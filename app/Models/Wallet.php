@@ -94,7 +94,7 @@ final class Wallet extends Model
     /**
      * @return HasMany<WalletLedgerEntry, $this>
      */
-    public function wallet_ledger_entries(): HasMany
+    public function ledger_entries(): HasMany
     {
         return $this->hasMany(WalletLedgerEntry::class, 'wallet_id');
     }

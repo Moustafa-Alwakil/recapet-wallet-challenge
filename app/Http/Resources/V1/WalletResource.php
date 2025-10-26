@@ -29,6 +29,7 @@ final class WalletResource extends JsonResource
             'deposits' => WalletDepositResource::collection($this->whenLoaded('deposits')),
             'in_transfers' => WalletTransferResource::collection($this->whenLoaded('in_transfers')),
             'out_transfers' => WalletTransferResource::collection($this->whenLoaded('out_transfers')),
+            'ledger_entries' => WalletLedgerEntryResource::collection($this->whenLoaded('ledger_entries')),
         ];
     }
 }

@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Traits\InteractsWithIdempotency;
+use Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -13,9 +17,9 @@ declare(strict_types=1);
 |
 */
 
-pest()->extend(Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class, InteractsWithIdempotency::class)
+    ->in('Unit', 'Feature');
 
 /*
 |--------------------------------------------------------------------------

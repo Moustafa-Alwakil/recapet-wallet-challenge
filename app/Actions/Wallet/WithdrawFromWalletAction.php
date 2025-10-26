@@ -20,6 +20,9 @@ final class WithdrawFromWalletAction
 
     public Wallet $wallet;
 
+    /**
+     * @throws InsufficientBalanceException|WithdrawFromWalletFailedException|Throwable
+     */
     public function __invoke(Wallet $wallet, int $amountInCents): void
     {
         $this->withdrawalRequest = WalletWithdrawalRequest::query()
@@ -48,15 +51,16 @@ final class WithdrawFromWalletAction
             $this->markWithdrawalRequestAsSucceeded();
 
             DB::commit();
-        } catch (Throwable $exception) {
+        } catch (InsufficientBalanceException $insufficientBalanceException) {
             DB::rollBack();
 
             $this->markWithdrawalRequestAsFailed();
 
-            throw_if(
-                condition: $exception instanceof InsufficientBalanceException,
-                exception: $exception
-            );
+            throw $insufficientBalanceException;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            $this->markWithdrawalRequestAsFailed();
 
             throw WithdrawFromWalletFailedException::new(
                 exceptionCode: ExceptionCode::WITHDRAW_FROM_WALLET_FAILED,

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6cddf9260d9d1fd3bb7528715c89a428",
+    "content-hash": "27cc69452cc03bf1486b3f65725c10e4",
     "packages": [
         {
             "name": "brick/math",
@@ -1228,16 +1228,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.35.0",
+            "version": "v12.35.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "9583ef9e405a71d5b8c04ff6efd05a7ef9a5baef"
+                "reference": "d6d6e3cb68238e2fb25b440f222442adef5a8a15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/9583ef9e405a71d5b8c04ff6efd05a7ef9a5baef",
-                "reference": "9583ef9e405a71d5b8c04ff6efd05a7ef9a5baef",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/d6d6e3cb68238e2fb25b440f222442adef5a8a15",
+                "reference": "d6d6e3cb68238e2fb25b440f222442adef5a8a15",
                 "shasum": ""
             },
             "require": {
@@ -1443,7 +1443,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-10-21T15:15:41+00:00"
+            "time": "2025-10-23T15:25:03+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -6359,6 +6359,59 @@
             "time": "2025-10-06T08:26:52+00:00"
         },
         {
+            "name": "dg/bypass-finals",
+            "version": "v1.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dg/bypass-finals.git",
+                "reference": "920a7da2f3c1422fd83f9ec4df007af53dc4018b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dg/bypass-finals/zipball/920a7da2f3c1422fd83f9ec4df007af53dc4018b",
+                "reference": "920a7da2f3c1422fd83f9ec4df007af53dc4018b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "nette/tester": "^2.3",
+                "phpstan/phpstan": "^0.12"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0-only",
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                }
+            ],
+            "description": "Removes final keyword from source code on-the-fly and allows mocking of final methods and classes",
+            "keywords": [
+                "finals",
+                "mocking",
+                "phpunit",
+                "testing",
+                "unit"
+            ],
+            "support": {
+                "issues": "https://github.com/dg/bypass-finals/issues",
+                "source": "https://github.com/dg/bypass-finals/tree/v1.9.0"
+            },
+            "time": "2025-01-16T00:46:05+00:00"
+        },
+        {
             "name": "doctrine/deprecations",
             "version": "1.1.5",
             "source": {
@@ -7291,6 +7344,79 @@
                 }
             ],
             "time": "2025-06-25T02:12:12+00:00"
+        },
+        {
+            "name": "nunomaduro/mock-final-classes",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nunomaduro/mock-final-classes.git",
+                "reference": "b13fc71acd9d6f1e2de8209217103cbd2035871f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nunomaduro/mock-final-classes/zipball/b13fc71acd9d6f1e2de8209217103cbd2035871f",
+                "reference": "b13fc71acd9d6f1e2de8209217103cbd2035871f",
+                "shasum": ""
+            },
+            "require": {
+                "dg/bypass-finals": "^1.1",
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "localheinz/phpstan-rules": "^0.10.0",
+                "phpstan/phpstan": "^0.11.8",
+                "phpstan/phpstan-strict-rules": "^0.11.1",
+                "phpunit/phpunit": "^7.0|^8.0|^9.3",
+                "thecodingmachine/phpstan-strict-rules": "^0.11.1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ],
+                "psr-4": {
+                    "NunoMaduro\\MockFinalClasses\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nuno Maduro",
+                    "email": "enunomaduro@gmail.com"
+                }
+            ],
+            "description": "Allows mocking of final methods and classes in PHP.",
+            "keywords": [
+                "class",
+                "classes",
+                "final",
+                "mock",
+                "php",
+                "phpunit"
+            ],
+            "support": {
+                "issues": "https://github.com/nunomaduro/mock-final-classes/issues",
+                "source": "https://github.com/nunomaduro/mock-final-classes/tree/v1.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66BYDWAT92N6L",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/nunomaduro",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/nunomaduro",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2023-05-14T23:33:16+00:00"
         },
         {
             "name": "pestphp/pest",
