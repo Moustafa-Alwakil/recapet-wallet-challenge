@@ -36,6 +36,8 @@
   > Note: Each seeded user has an associated wallet that includes a predefined balance '$10,000.00', making it easy to test wallet-related features such as deposits, withdrawals, and transfers.
   > 
   > All seeded users share the same password: Password@123.
+  >
+  > You can find the **Postman collection** within the project files at the root directory under the name **`Recapet Coding Challenge.postman_collection.json`**.
 
 ---
 
