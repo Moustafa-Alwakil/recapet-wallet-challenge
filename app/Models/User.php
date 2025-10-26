@@ -7,6 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Resources\V1\UserResource;
 use App\Observers\UserObserver;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +23,9 @@ use Laravel\Sanctum\HasApiTokens;
 #[UseResource(UserResource::class)]
 final class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /**
+     * @use HasFactory<UserFactory>
+     */
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
