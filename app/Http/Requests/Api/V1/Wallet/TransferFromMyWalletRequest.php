@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Requests\Api\V1\Wallet;
 
 use App\Enums\WalletStatus;
+use App\Exceptions\ConcurrentWalletTransactionException;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Traits\WalletConcerns;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Number;
 use Illuminate\Validation\Rule;
@@ -17,6 +19,8 @@ use Illuminate\Validation\ValidationException;
  */
 final class TransferFromMyWalletRequest extends FormRequest
 {
+    use WalletConcerns;
+
     public Wallet $receiverUserWallet;
 
     public int $amountInCents;
@@ -34,6 +38,14 @@ final class TransferFromMyWalletRequest extends FormRequest
             ],
             'amount' => 'required|decimal:2|min:1|max:100000',
         ];
+    }
+
+    /**
+     * @throws ConcurrentWalletTransactionException
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->lockWallet($this->user()->wallet->id);
     }
 
     /**

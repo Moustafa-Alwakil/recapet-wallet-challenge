@@ -23,14 +23,18 @@ final class TransferFromMyWalletController extends ApiBaseController
      */
     public function __invoke(TransferFromMyWalletRequest $request, TransferBetweenWalletsAction $transferBetweenWalletsAction): JsonResponse
     {
-        $transferBetweenWalletsAction($this->authUser->wallet, $request->receiverUserWallet, $request->amountInCents);
+        try {
+            $transferBetweenWalletsAction($this->authUser->wallet, $request->receiverUserWallet, $request->amountInCents);
 
-        return CustomJsonResponse::success(
-            message: "🥳 Transfer successful! {$transferBetweenWalletsAction->walletTransfer->textual_amount} has been transferred from your wallet.",
-            data: [
-                'transfer' => $transferBetweenWalletsAction->walletTransfer->toResource(),
-                'wallet' => $transferBetweenWalletsAction->senderWallet->toResource(),
-            ]
-        );
+            return CustomJsonResponse::success(
+                message: "🥳 Transfer successful! {$transferBetweenWalletsAction->walletTransfer->textual_amount} has been transferred from your wallet.",
+                data: [
+                    'transfer' => $transferBetweenWalletsAction->walletTransfer->toResource(),
+                    'wallet' => $transferBetweenWalletsAction->senderWallet->toResource(),
+                ]
+            );
+        } finally {
+            $request->releaseWalletLock();
+        }
     }
 }

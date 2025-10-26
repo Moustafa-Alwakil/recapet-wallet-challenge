@@ -23,14 +23,18 @@ final class WithdrawFromMyWalletController extends ApiBaseController
      */
     public function __invoke(WithdrawFromMyWalletRequest $request, WithdrawFromWalletAction $withdrawFromWalletAction): JsonResponse
     {
-        $withdrawFromWalletAction($this->authUser->wallet, $request->amountInCents);
+        try {
+            $withdrawFromWalletAction($this->authUser->wallet, $request->amountInCents);
 
-        return CustomJsonResponse::success(
-            message: "🥳 Withdrawal successful! {$withdrawFromWalletAction->withdrawalRequest->textual_amount} has been deducted from your wallet.",
-            data: [
-                'withdrawal_request' => $withdrawFromWalletAction->withdrawalRequest->toResource(),
-                'wallet' => $withdrawFromWalletAction->wallet->toResource(),
-            ]
-        );
+            return CustomJsonResponse::success(
+                message: "🥳 Withdrawal successful! {$withdrawFromWalletAction->withdrawalRequest->textual_amount} has been deducted from your wallet.",
+                data: [
+                    'withdrawal_request' => $withdrawFromWalletAction->withdrawalRequest->toResource(),
+                    'wallet' => $withdrawFromWalletAction->wallet->toResource(),
+                ]
+            );
+        } finally {
+            $request->releaseWalletLock();
+        }
     }
 }

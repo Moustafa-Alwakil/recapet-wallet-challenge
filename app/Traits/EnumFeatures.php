@@ -8,7 +8,9 @@ use Illuminate\Support\Str;
 
 trait EnumFeatures
 {
-    /** @return array<string, string|null> */
+    /**
+     * @return array<string, string|null>
+     */
     public function current(): array
     {
         return [

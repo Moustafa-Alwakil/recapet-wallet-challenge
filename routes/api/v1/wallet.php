@@ -23,7 +23,7 @@ Route::middleware([
                         Route::get('ledger-entries', MyWalletLedgerEntriesController::class)->name('ledger-entries');
 
                         Route::middleware([
-                            'ensure_idempotency',
+                            //                            'ensure_idempotency',
                         ])
                             ->group(function () {
                                 Route::post('deposit', DepositToMyWalletController::class)->name('deposit');

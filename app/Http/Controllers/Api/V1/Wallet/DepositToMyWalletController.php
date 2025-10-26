@@ -18,14 +18,18 @@ final class DepositToMyWalletController extends ApiBaseController
 {
     public function __invoke(DepositToMyWalletRequest $request, DepositToWalletAction $depositToWalletAction): JsonResponse
     {
-        $depositToWalletAction($this->authUser->wallet, $request->amountInCents);
+        try {
+            $depositToWalletAction($this->authUser->wallet, $request->amountInCents);
 
-        return CustomJsonResponse::success(
-            message: "🎉 Deposit successful! {$depositToWalletAction->deposit->textual_amount} added to your wallet.",
-            data: [
-                'deposit' => $depositToWalletAction->deposit->toResource(),
-                'wallet' => $depositToWalletAction->wallet->toResource(),
-            ]
-        );
+            return CustomJsonResponse::success(
+                message: "🎉 Deposit successful! {$depositToWalletAction->deposit->textual_amount} added to your wallet.",
+                data: [
+                    'deposit' => $depositToWalletAction->deposit->toResource(),
+                    'wallet' => $depositToWalletAction->wallet->toResource(),
+                ]
+            );
+        } finally {
+            $request->releaseWalletLock();
+        }
     }
 }
