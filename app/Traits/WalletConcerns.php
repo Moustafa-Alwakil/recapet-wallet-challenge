@@ -19,7 +19,7 @@ trait WalletConcerns
      */
     public function lockWallet(int $walletId, int $seconds = 60): void
     {
-        $lock = Cache::lock("wallet-$walletId", $seconds);
+        $lock = Cache::lock("wallet:$walletId:lock", $seconds);
 
         throw_unless(
             condition: $lock->get(),
