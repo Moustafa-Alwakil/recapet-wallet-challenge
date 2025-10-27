@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Traits;
+namespace Tests\Traits;
 
 use Illuminate\Support\Str;
 

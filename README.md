@@ -56,5 +56,9 @@
 ## Used Packages
 
 - **[infinitypaul/idempotency-laravel](https://github.com/infinitypaul/idempotency-laravel)** — Handles request idempotency to prevent duplicate operations.
+- **[pestphp/pest](https://github.com/pestphp/pest)** — Used for writing tests with a clean and expressive syntax.
 - **[nunomaduro/mock-final-classes](https://github.com/nunomaduro/mock-final-classes)** — Allows mocking of `final` classes during testing.
-  > Note: All non-extendable classes are marked as `final`, and a Pint rule is configured in `pint.json` to enforce this convention.
+- **[nunomaduro/larastan](https://github.com/nunomaduro/larastan)** — Provides static analysis to detect potential bugs and improve code quality.
+- **[laravel/pint](https://github.com/laravel/pint)** — Ensures consistent code style and automatic formatting.
+
+> Note: All non-extendable classes are marked as `final`, and a Pint rule is configured in `pint.json` to enforce this convention.
