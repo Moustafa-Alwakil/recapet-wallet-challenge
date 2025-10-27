@@ -37,6 +37,7 @@ arch()
         'App\Http\Requests',
         'App\Http\Resources',
         'App\Observers',
+        'App\Console\Commands',
     ])
     ->ignoring(User::class);
 

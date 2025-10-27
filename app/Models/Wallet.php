@@ -96,7 +96,15 @@ final class Wallet extends Model
      */
     public function ledger_entries(): HasMany
     {
-        return $this->hasMany(WalletLedgerEntry::class, 'wallet_id');
+        return $this->hasMany(WalletLedgerEntry::class);
+    }
+
+    /**
+     * @return HasMany<WalletSnapshot, $this>
+     */
+    public function snapshots(): HasMany
+    {
+        return $this->hasMany(WalletSnapshot::class);
     }
 
     public function hasSufficientBalance(int $amount): bool
